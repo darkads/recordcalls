@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<ImageView
+		android:id="@+id/imageView1"
+		android:layout_width="64dp"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"
+		android:layout_marginTop="10dp"
+		android:contentDescription="@string/notiIcon"
+		android:src="@drawable/ic_launcher" />
+	<TextView
+		android:id="@+id/textViewBigDlg"
+		android:layout_width="150dp"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_toRightOf="@+id/imageView1"
+		android:text="@string/textViewBigDlg"
+		android:layout_marginTop="10dp"
+		android:layout_marginLeft="10dp"
+		android:textSize="15sp" />
+	<Button
+		android:id="@+id/startRecBtnDlg"
+		android:layout_width="wrap_content"
+		android:layout_height="30dp"
+		android:layout_toRightOf="@+id/imageView1"
+		android:layout_below="@+id/textViewBigDlg"
+		android:minHeight="15dp"
+		android:layout_marginLeft="5dp"
+		android:text="@string/startRecBtn"
+		android:textSize="10sp" />
+	<Button
+		android:id="@+id/cancelRecBtnDlg"
+		android:layout_width="wrap_content"
+		android:layout_height="30dp"
+		android:layout_alignBaseline="@+id/startRecBtnDlg"
+		android:layout_alignBottom="@+id/startRecBtnDlg"
+		android:layout_alignRight="@+id/textViewBigDlg"
+		android:minHeight="30dp"
+		android:text="@string/cancelRecBtn"
+		android:textSize="10sp" />
+
+</RelativeLayout>

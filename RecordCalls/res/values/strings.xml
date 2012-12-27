@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RecordCalls</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="stopRecBtn">Stop</string>
+    <string name="startRecBtn">Start</string>
+    <string name="stopRecHint">Stop Recording</string>
+    <string name="startRecHint">Start Recording</string>
+    <string name="notiIcon">NotificationIcon</string>
+    <string name="textViewBigNoti">Recording...</string>
+    <string name="textViewBigDlg">Start Recording?</string>
+    <string name="cancelRecBtn">Cancel</string>
+
+</resources>

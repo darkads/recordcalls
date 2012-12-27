@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<ImageView
+		android:id="@+id/imageView1"
+		android:layout_width="64dp"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"
+		android:contentDescription="@string/notiIcon"
+		android:src="@drawable/ic_launcher" />
+	<TextView
+		android:id="@+id/textViewBigNoti"
+		android:layout_width="150dp"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_toRightOf="@+id/imageView1"
+		android:text="@string/textViewBigNoti"
+		android:layout_marginTop="3dp"
+		android:layout_marginLeft="10dp"
+		android:textSize="15sp" />
+	<Button
+		android:id="@+id/startRecBtnNoti"
+		android:layout_width="wrap_content"
+		android:layout_height="30dp"
+		android:layout_alignLeft="@+id/textViewBigNoti"
+		android:layout_below="@+id/textViewBigNoti"
+		android:minHeight="15dp"
+		android:text="@string/startRecBtn"
+		android:textSize="10sp" />
+	<ProgressBar android:id="@+id/progressBar1" style="?android:attr/progressBarStyleHorizontal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_above="@+id/stopRecBtnNoti" android:layout_alignLeft="@+id/stopRecBtnNoti" android:layout_alignRight="@+id/textViewSmallNoti" android:indeterminate="true" android:visibility="visible"/>
+	<Button android:id="@+id/stopRecBtnNoti" android:layout_width="wrap_content" android:layout_height="30dp" android:layout_alignBaseline="@+id/startRecBtnNoti" android:layout_alignBottom="@+id/startRecBtnNoti" android:layout_alignRight="@+id/textViewBigNoti" android:minHeight="30dp" android:text="@string/stopRecBtn" android:textSize="10sp"/>
+	<TextView android:id="@+id/textViewSmallNoti" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignBaseline="@+id/stopRecBtnNoti" android:layout_alignBottom="@+id/stopRecBtnNoti" android:layout_alignParentRight="true" android:layout_marginRight="26dp" android:text="00:00" android:textSize="10sp" android:visibility="visible"/>
+
+</RelativeLayout>
