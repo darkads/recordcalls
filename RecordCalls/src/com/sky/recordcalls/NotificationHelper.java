@@ -228,7 +228,7 @@ public class NotificationHelper
 
 		Log.d(TAG, "in startrecording() - before creating new callrecorder");
 		Callrecorder = new MediaRecorder();
-		Callrecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+		Callrecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
 		// Callrecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		Callrecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 		Callrecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
