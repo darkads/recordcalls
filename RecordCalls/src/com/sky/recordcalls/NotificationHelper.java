@@ -13,6 +13,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -30,6 +31,7 @@ public class NotificationHelper
 	private Notification.Builder notificationBuilder;
 	private Notification notification;
 	private NotificationManager notificationManager;
+	private AudioManager audioManager;
 	private PendingIntent pendingIntent;
 	private CharSequence ContentTitle;
 	private PhoneStateListener listener;
@@ -87,12 +89,14 @@ public class NotificationHelper
 		// .addAction(R.drawable.icon, "Record", pIntent)
 		// .addAction(R.drawable.icon, "More", pIntent)
 
-		notificationManager = ((NotificationManager) context.getSystemService(Service.NOTIFICATION_SERVICE));
+		notificationManager = (NotificationManager) context.getSystemService(Service.NOTIFICATION_SERVICE);
 		// Hide the notification after its selected
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		Log.d(TAG, "After notificationManager");
 
 		notificationManager.notify(NOTIFICATION_ID_NOT_RECORDING, notification);
+
+		audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
 		startRecording = new BroadcastReceiver()
 		{
@@ -102,6 +106,13 @@ public class NotificationHelper
 				String action_name = intent.getAction();
 				if (action_name.equals("startRecording"))
 				{
+					int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1);
+					Log.d(TAG, "Audio SCO state: " + state);
+
+					if (AudioManager.SCO_AUDIO_STATE_CONNECTED == state)
+					{
+						Log.d(TAG, "Bluetooth device connected.");
+					}
 					Log.d(TAG, "startrecording...");
 					startRecording();
 					context.unregisterReceiver(startRecording);
@@ -114,7 +125,11 @@ public class NotificationHelper
 				// }
 			};
 		};
-		context.registerReceiver(startRecording, new IntentFilter("startRecording"));
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction("startRecording");
+		intentFilter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
+		context.registerReceiver(startRecording, intentFilter);
+		audioManager.startBluetoothSco();
 		// registerReceiver(broadcastReceiver, new IntentFilter("stopRecording"));
 
 		stopRecording = new BroadcastReceiver()
@@ -134,38 +149,38 @@ public class NotificationHelper
 		};
 		context.registerReceiver(stopRecording, new IntentFilter("stopRecording"));
 
-//		 listener = new PhoneStateListener()
-//		 {
-//		 public void onCallStateChanged(int state, String incomingnumber)
-//		 {
-//		 // String stateS = "N/A";
-//		 switch (state)
-//		 {
-//		 case TelephonyManager.CALL_STATE_IDLE:
-//		 stopSelf();
-//		 break;
-//		 case TelephonyManager.CALL_STATE_RINGING:
-//		
-//		 break;
-//		 case TelephonyManager.CALL_STATE_OFFHOOK:
-//		
-//		 break;
-//		 }
-//		
-//		 }
-//		 };
-//		
-//		 telephoneM = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-//		 telephoneM.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
+		// listener = new PhoneStateListener()
+		// {
+		// public void onCallStateChanged(int state, String incomingnumber)
+		// {
+		// // String stateS = "N/A";
+		// switch (state)
+		// {
+		// case TelephonyManager.CALL_STATE_IDLE:
+		// stopSelf();
+		// break;
+		// case TelephonyManager.CALL_STATE_RINGING:
+		//
+		// break;
+		// case TelephonyManager.CALL_STATE_OFFHOOK:
+		//
+		// break;
+		// }
+		//
+		// }
+		// };
+		//
+		// telephoneM = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		// telephoneM.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 	}
-	
+
 	public void createDialog()
 	{
-//		Log.d(TAG,"In create dialog");
-		Intent intent =  new Intent(context, StartRecordingDialog.class);
-//		intent.setClass(context, com.sky.recordcalls.StartRecordingDialog.class);
+		// Log.d(TAG,"In create dialog");
+		Intent intent = new Intent(context, StartRecordingDialog.class);
+		// intent.setClass(context, com.sky.recordcalls.StartRecordingDialog.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		context.startActivity(intent);	
+		context.startActivity(intent);
 	}
 
 	private void setListeners(RemoteViews contentView)
@@ -199,6 +214,7 @@ public class NotificationHelper
 		Callrecorder.reset();
 		Callrecorder.release();
 		Callrecorder = null;
+		audioManager.stopBluetoothSco();
 
 	}
 
@@ -381,5 +397,4 @@ public class NotificationHelper
 		this.startTime = startTime;
 	}
 
-	
 }
