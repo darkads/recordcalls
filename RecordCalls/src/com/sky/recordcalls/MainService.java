@@ -16,7 +16,7 @@ import android.util.Log;
 public class MainService extends Service
 {
 
-	protected String TAG = "MainActivity";
+	protected String TAG = "MainService";
 	final int ID = 0;
 	NotificationHelper notificationHelper;
 	private PhoneStateListener listener;

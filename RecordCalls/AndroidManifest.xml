@@ -34,7 +34,9 @@
 			</intent-filter>
 		</receiver>
 		<service android:name="com.sky.recordcalls.MainService"></service>
-		<!-- <activity android:name="StartRecordingDialog" android:theme="@android:style/Theme.Translucent"></activity> -->
+		<activity
+			android:name="StartRecordingDialog"
+			android:theme="@android:style/Theme.Translucent"></activity>
 	</application>
 
 </manifest>

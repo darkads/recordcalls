@@ -23,7 +23,7 @@ public class Record extends BroadcastReceiver
 		{
 			Intent i = new Intent(context, MainService.class);
 			// i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//			 context.startService(i);
+			// context.startService(i);
 		}
 		if (state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_OFFHOOK))
 		{
@@ -35,15 +35,12 @@ public class Record extends BroadcastReceiver
 				context.stopService(i);
 			}
 			context.startService(i);
-//			Log.d("RECORD","In create dialog");
-//			Intent i = new Intent(context, StartRecordingDialog.class);
-//			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//			context.startActivity(i);	
 		}
-		// if (state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_IDLE))
-		// {
-		// Intent i = new Intent(context, MainActivity.class);
-		// context.stopService(i);
-		// }
+		if (state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_IDLE))
+		{
+			Log.d("Record", "Phone is idle");
+			Intent i = new Intent(context, MainService.class);
+			context.stopService(i);
+		}
 	}
 }

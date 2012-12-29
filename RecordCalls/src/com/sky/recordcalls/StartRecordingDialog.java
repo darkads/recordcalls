@@ -17,14 +17,40 @@ public class StartRecordingDialog extends Activity
 {
 
 	private String TAG = "StartRecordingDialog";
-	private final int DIALOG_REC = 0;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		showDialog(DIALOG_REC);
+		final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("RecordCalls");
+		alert.setMessage("Start Recording?");
+		alert.setPositiveButton("Start", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int whichButton)
+			{
+				sendBroadcast();
+				dialog.dismiss();
+			}
+		});
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int whichButton)
+			{
+				dialog.cancel();
+			}
+		});
+		alert.setOnCancelListener(new OnCancelListener()
+		{
+			public void onCancel(DialogInterface dialog)
+			{
+				StartRecordingDialog.this.finish();
+			}
+		});
+		alert.create();
+		alert.show();
+
 	}
 
 	public void sendBroadcast()
@@ -37,47 +63,5 @@ public class StartRecordingDialog extends Activity
 		Log.d(TAG, "After sending broadcast");
 
 		this.finish();
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id)
-	{
-		switch (id)
-		{
-			case DIALOG_REC:
-				LayoutInflater factory = LayoutInflater.from(this);
-				final View recordView = factory.inflate(R.layout.record_dialog, null);
-				Dialog dialog = new AlertDialog.Builder(this).setView(recordView).setOnCancelListener(new OnCancelListener()
-				{
-					public void onCancel(DialogInterface dialog)
-					{
-						StartRecordingDialog.this.finish();
-					}
-				}).create();
-
-				Button startRec = (Button) recordView.findViewById(R.id.startRecBtnDlg);
-				startRec.setOnClickListener(new OnClickListener()
-				{
-					@Override
-					public void onClick(View v)
-					{
-						sendBroadcast();
-					}
-				});
-				Button cancelRec = (Button) recordView.findViewById(R.id.cancelRecBtnDlg);
-				cancelRec.setOnClickListener(new OnClickListener()
-				{
-					@Override
-					public void onClick(View v)
-					{
-						StartRecordingDialog.this.finish();
-					}
-				});
-				dialog.show();
-				
-		}
-
-		  return super.onCreateDialog(id);
-
 	}
 }

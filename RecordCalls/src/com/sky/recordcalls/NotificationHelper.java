@@ -162,9 +162,10 @@ public class NotificationHelper
 	public void createDialog()
 	{
 //		Log.d(TAG,"In create dialog");
-//		Intent intent = new Intent(context, StartRecordingDialog.class);
-//		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//		context.startActivity(intent);	
+		Intent intent =  new Intent(context, StartRecordingDialog.class);
+//		intent.setClass(context, com.sky.recordcalls.StartRecordingDialog.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		context.startActivity(intent);	
 	}
 
 	private void setListeners(RemoteViews contentView)
@@ -306,7 +307,7 @@ public class NotificationHelper
 
 		// Lets display a toast so the user knows the long running process has finished
 		Toast.makeText(context, "Long running process COMPLETE!", Toast.LENGTH_LONG).show();
-		// notificationManager.cancel(NOTIFICATION_ID_NOT_RECORDING);
+		notificationManager.cancel(NOTIFICATION_ID_NOT_RECORDING);
 
 	}
 
