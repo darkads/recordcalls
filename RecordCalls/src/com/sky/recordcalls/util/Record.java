@@ -1,6 +1,6 @@
 package com.sky.recordcalls.util;
 
-import com.sky.recordcalls.MainActivity;
+import com.sky.recordcalls.MainService;
 import com.sky.recordcalls.StartRecordingDialog;
 
 import android.content.BroadcastReceiver;
@@ -21,14 +21,14 @@ public class Record extends BroadcastReceiver
 
 		if (state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))
 		{
-			Intent i = new Intent(context, MainActivity.class);
+			Intent i = new Intent(context, MainService.class);
 			// i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			 context.startService(i);
+//			 context.startService(i);
 		}
 		if (state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_OFFHOOK))
 		{
 			Log.d("Record", "Phone is offhook");
-			Intent i = new Intent(context, MainActivity.class);
+			Intent i = new Intent(context, MainService.class);
 			if (context.startService(i) != null)
 			{
 				Toast.makeText(context, "Service is already running! Stopping it first...", Toast.LENGTH_SHORT).show();
