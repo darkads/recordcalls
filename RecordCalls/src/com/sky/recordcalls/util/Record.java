@@ -1,7 +1,6 @@
 package com.sky.recordcalls.util;
 
 import com.sky.recordcalls.MainService;
-import com.sky.recordcalls.StartRecordingDialog;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

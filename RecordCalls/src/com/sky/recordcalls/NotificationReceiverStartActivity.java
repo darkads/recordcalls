@@ -3,8 +3,6 @@ package com.sky.recordcalls;
 import java.io.File;
 import java.io.IOException;
 
-import com.sky.recordcalls.util.Formatter;
-
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -13,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -46,6 +45,7 @@ public class NotificationReceiverStartActivity extends Activity
 	{
 
 		Intent broadcast = new Intent("com.sky.recordcalls.NotificationReceiverStartActivity");
+//		broadcast.putExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, AudioManager.)
 		broadcast.setAction("startRecording");
 		this.sendBroadcast(broadcast);
 //		Intent intent = new Intent(this, NotificationReceiverStopActivity.class);

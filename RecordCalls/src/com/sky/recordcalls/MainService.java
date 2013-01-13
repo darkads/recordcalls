@@ -93,6 +93,7 @@ public class MainService extends Service
 			Log.d(TAG, "Notification Helper IDLE is not null!");
 			notificationHelper.setIdle(true);
 		}
+		notificationHelper.sendDialogBroadcast();
 	}
 
 	@Override

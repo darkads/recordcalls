@@ -3,7 +3,10 @@ package com.sky.recordcalls;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,12 +20,45 @@ public class StartRecordingDialog extends Activity
 {
 
 	private String TAG = "StartRecordingDialog";
+	private BroadcastReceiver removeDialog;
+	private Dialog adialog;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		
+		removeDialog = new BroadcastReceiver()
+		{
+			@Override
+			public void onReceive(Context context, Intent intent)
+			{
+				String action_name = intent.getAction();
+				if (action_name.equals("removeDialog"))
+				{
+					Log.d(TAG, "Removing Dialog...");
+					if (adialog != null)
+					{
+						adialog.cancel();
+					}
+				}
+			};
+		};
+		this.registerReceiver(removeDialog, new IntentFilter("removeDialog"));
+		
+		
+	}
+	
+	@Override
+	public void onPostCreate(Bundle savedInstanceState)
+	{
+		super.onPostCreate(savedInstanceState);
+		showDialog();
+	}
+	
+	public void showDialog()
+	{
 		final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("RecordCalls");
 		alert.setMessage("Start Recording?");
@@ -48,9 +84,9 @@ public class StartRecordingDialog extends Activity
 				StartRecordingDialog.this.finish();
 			}
 		});
-		alert.create();
-		alert.show();
-
+		adialog = alert.create();
+//		alert.show();
+		adialog.show();
 	}
 
 	public void sendBroadcast()
@@ -63,5 +99,15 @@ public class StartRecordingDialog extends Activity
 		Log.d(TAG, "After sending broadcast");
 
 		this.finish();
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		if (removeDialog != null)
+		{
+			this.unregisterReceiver(removeDialog);
+		}
 	}
 }
