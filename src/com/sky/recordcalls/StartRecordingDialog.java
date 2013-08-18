@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
 public class StartRecordingDialog extends Activity
@@ -47,6 +49,7 @@ public class StartRecordingDialog extends Activity
 		};
 		this.registerReceiver(removeDialog, new IntentFilter("removeDialog"));
 		
+
 		
 	}
 	
@@ -59,6 +62,11 @@ public class StartRecordingDialog extends Activity
 	
 	public void showDialog()
 	{
+		Window window = this.getWindow();
+		window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+		window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 		final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("RecordCalls");
 		alert.setMessage("Start Recording?");
@@ -68,6 +76,9 @@ public class StartRecordingDialog extends Activity
 			{
 				sendBroadcast();
 				dialog.dismiss();
+				//return back to dialer activity
+				Intent intent = new Intent(Intent.ACTION_CALL_BUTTON);
+				startActivity(intent);
 			}
 		});
 		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
@@ -75,6 +86,8 @@ public class StartRecordingDialog extends Activity
 			public void onClick(DialogInterface dialog, int whichButton)
 			{
 				dialog.cancel();
+				Intent intent = new Intent(Intent.ACTION_CALL_BUTTON);
+				startActivity(intent);
 			}
 		});
 		alert.setOnCancelListener(new OnCancelListener()

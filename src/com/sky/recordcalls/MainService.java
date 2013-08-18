@@ -1,17 +1,19 @@
 package com.sky.recordcalls;
 
-import java.text.DecimalFormat;
 import java.util.Locale;
 
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 public class MainService extends Service
 {
@@ -30,10 +32,27 @@ public class MainService extends Service
 		super.onCreate();
 		// setContentView(R.layout.activity_main);
 
+//		if (isMyServiceRunning())
+//		{
+//			Context context = getApplicationContext();
+//			Toast.makeText(context, "Service is already running! Stopping it first...", Toast.LENGTH_SHORT).show();
+//			Intent i = new Intent(context, MainService.class);
+//			context.stopService(i);
+//		}
 		notificationHelper = new NotificationHelper(this, ID);
 		Log.i(TAG, "Service created...");
 		// this.finish();
 
+	}
+	
+	private boolean isMyServiceRunning() {
+	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+	        if ("com.sky.recordcalls.MainService".equals(service.service.getClassName())) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 
 	// @Override

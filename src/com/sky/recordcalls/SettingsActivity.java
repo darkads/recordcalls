@@ -19,19 +19,19 @@ public class SettingsActivity extends Activity
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		Log.i(TAG, "SettingsActivity created");
-		Button createNoti = (Button) findViewById(R.id.createNotiBtn);
-		notificationHelper = new NotificationHelper(this, SETTINGS_ID);
-		createNoti.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View v)
-			{
-				notificationHelper.createNotification();
-			}
-		});
+//		setContentView(R.layout.activity_main);
+//		Log.i(TAG, "SettingsActivity created");
+//		Button createNoti = (Button) findViewById(R.id.createNotiBtn);
+//		notificationHelper = new NotificationHelper(this, SETTINGS_ID);
+//		createNoti.setOnClickListener(new OnClickListener()
+//		{
+//
+//			@Override
+//			public void onClick(View v)
+//			{
+//				notificationHelper.createNotification();
+//			}
+//		});
 	}
 
 }
