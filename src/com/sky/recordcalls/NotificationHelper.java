@@ -48,6 +48,7 @@ public class NotificationHelper
 	File pathString = Environment.getExternalStorageDirectory();
 	String fileName = "", fileExt = "mp4";
 	private MediaRecorder Callrecorder;
+//	int samplingRate = 48000;
 	int samplingRate = 44100;
 	BroadcastReceiver stopRecording, startRecording;
 
@@ -96,7 +97,7 @@ public class NotificationHelper
 
 		notificationManager.notify(NOTIFICATION_ID_NOT_RECORDING, notification);
 
-//		audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		// audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
 		startRecording = new BroadcastReceiver()
 		{
@@ -106,13 +107,13 @@ public class NotificationHelper
 				String action_name = intent.getAction();
 				if (action_name.equals("startRecording"))
 				{
-//					int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1);
-//					Log.d(TAG, "Audio SCO state: " + state);
-//
-//					if (AudioManager.SCO_AUDIO_STATE_CONNECTED == state)
-//					{
-//						Log.d(TAG, "Bluetooth device connected.");
-//					}
+					// int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1);
+					// Log.d(TAG, "Audio SCO state: " + state);
+					//
+					// if (AudioManager.SCO_AUDIO_STATE_CONNECTED == state)
+					// {
+					// Log.d(TAG, "Bluetooth device connected.");
+					// }
 					Log.d(TAG, "startrecording...");
 					startRecording();
 					context.unregisterReceiver(startRecording);
@@ -125,11 +126,11 @@ public class NotificationHelper
 				// }
 			};
 		};
-//		IntentFilter intentFilter = new IntentFilter("startRecording");
-//		intentFilter.addAction("startRecording");
-//		intentFilter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
+		// IntentFilter intentFilter = new IntentFilter("startRecording");
+		// intentFilter.addAction("startRecording");
+		// intentFilter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
 		context.registerReceiver(startRecording, new IntentFilter("startRecording"));
-//		audioManager.startBluetoothSco();
+		// audioManager.startBluetoothSco();
 		// registerReceiver(broadcastReceiver, new IntentFilter("stopRecording"));
 
 		stopRecording = new BroadcastReceiver()
@@ -183,7 +184,7 @@ public class NotificationHelper
 
 		Log.d(TAG, "After sending broadcast to remove dialog");
 	}
-	
+
 	public void createDialog()
 	{
 		// Log.d(TAG,"In create dialog");
@@ -224,7 +225,7 @@ public class NotificationHelper
 		Callrecorder.reset();
 		Callrecorder.release();
 		Callrecorder = null;
-//		audioManager.stopBluetoothSco();
+		// audioManager.stopBluetoothSco();
 
 	}
 
@@ -255,6 +256,8 @@ public class NotificationHelper
 		Log.d(TAG, "in startrecording() - before creating new callrecorder");
 		Callrecorder = new MediaRecorder();
 		Callrecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+		//1 for Mono and 2 for Stereo
+		Callrecorder.setAudioChannels(1);
 		// Callrecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		Callrecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 		Callrecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
@@ -283,7 +286,14 @@ public class NotificationHelper
 		{
 			e.printStackTrace();
 		}
-		Callrecorder.start();
+		try
+		{
+			Callrecorder.start();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 	}
 
