@@ -50,7 +50,7 @@ public class NotificationHelper
 	private MediaRecorder Callrecorder;
 //	int samplingRate = 48000;
 	int samplingRate = 44100;
-	BroadcastReceiver stopRecording, startRecording;
+	BroadcastReceiver stopRecording, startRecording, outgoingCall;
 
 	public NotificationHelper(Context context, int id)
 	{
@@ -150,6 +150,22 @@ public class NotificationHelper
 		};
 		context.registerReceiver(stopRecording, new IntentFilter("stopRecording"));
 
+		outgoingCall = new BroadcastReceiver()
+		{
+			@Override
+			public void onReceive(Context context, Intent intent)
+			{
+				String action_name = intent.getAction();
+				if (action_name.equals("outgoingCall"))
+				{
+					Log.d(TAG, "outgoingCall...");
+					startRecording();
+					context.unregisterReceiver(startRecording);
+					startRecording = null;
+				}
+			};
+		};
+		context.registerReceiver(startRecording, new IntentFilter("outgoingCall"));
 		// listener = new PhoneStateListener()
 		// {
 		// public void onCallStateChanged(int state, String incomingnumber)
@@ -255,12 +271,12 @@ public class NotificationHelper
 
 		Log.d(TAG, "in startrecording() - before creating new callrecorder");
 		Callrecorder = new MediaRecorder();
-		Callrecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+		Callrecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		//1 for Mono and 2 for Stereo
 		Callrecorder.setAudioChannels(1);
 		// Callrecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		Callrecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-		Callrecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+		Callrecorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
 		fileName = Formatter.datetime(Long.valueOf(System.currentTimeMillis()).longValue(), "_");
 
 		Log.d(TAG, "pathString - " + pathString);
