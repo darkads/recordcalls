@@ -3,8 +3,6 @@ package com.sky.recordcalls;
 import java.io.File;
 import java.io.IOException;
 
-import com.sky.recordcalls.util.Formatter;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,6 +21,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
+
+import com.sky.recordcalls.util.Formatter;
 
 public class NotificationHelper
 {
@@ -48,124 +48,130 @@ public class NotificationHelper
 	File pathString = Environment.getExternalStorageDirectory();
 	String fileName = "", fileExt = "mp4";
 	private MediaRecorder Callrecorder;
-//	int samplingRate = 48000;
+	// int samplingRate = 48000;
 	int samplingRate = 44100;
 	BroadcastReceiver stopRecording, startRecording, outgoingCall;
+	boolean enableRec = false;
 
-	public NotificationHelper(Context context, int id)
+	public NotificationHelper(Context context, int id, boolean enableRec)
 	{
 
 		this.ID = id;
 		this.context = context;
 		this.idle = false;
+		this.enableRec = enableRec;
 	}
 
 	public void createNotification()
 	{
-		// Prepare intent which is triggered if the notification is selected
-		Intent intent = new Intent(context, NotificationReceiverStartActivity.class);
-		pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-		// PendingIntent pIntentStop = PendingIntent.getActivity(this, 1, intent, 0);
-
-		Log.d(TAG, "After pending intent");
-		// Build notification actions are just fake
-		contentView = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
-		setListeners(contentView);
-		// notification.contentView = contentView;
-		contentView.setViewVisibility(R.id.textViewSmallNoti, View.INVISIBLE);
-		contentView.setViewVisibility(R.id.progressBar1, View.INVISIBLE);
-		contentView.setTextViewText(R.id.textViewBigNoti, "Start Recording?");
-		// Notification.Builder notificationBuilder = new Notification.Builder(context);
-		notificationBuilder = new Notification.Builder(context);
-		notificationBuilder.setContent(contentView);
-		notificationBuilder.setContentTitle("Record Calls");
-		notificationBuilder.setContentText("Subject");
-		notificationBuilder.setContentIntent(pendingIntent);
-		notificationBuilder.setSmallIcon(R.drawable.ic_launcher);
-		// notificationBuilder.addAction(R.drawable.ic_launcher, "Record", pendingIntent);
-		notification = notificationBuilder.build();
-
-		// .setContentText("Subject")
-
-		// .addAction(R.drawable.icon, "Record", pIntent)
-		// .addAction(R.drawable.icon, "More", pIntent)
-
-		notificationManager = (NotificationManager) context.getSystemService(Service.NOTIFICATION_SERVICE);
-		// Hide the notification after its selected
-		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		Log.d(TAG, "After notificationManager");
-
-		notificationManager.notify(NOTIFICATION_ID_NOT_RECORDING, notification);
-
-		// audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-
-		startRecording = new BroadcastReceiver()
+		
+		if (enableRec)
 		{
-			@Override
-			public void onReceive(Context context, Intent intent)
+			// Prepare intent which is triggered if the notification is selected
+			Intent intent = new Intent(context, NotificationReceiverStartActivity.class);
+			pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+			// PendingIntent pIntentStop = PendingIntent.getActivity(this, 1, intent, 0);
+
+			Log.d(TAG, "After pending intent");
+			// Build notification actions are just fake
+			contentView = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
+			setListeners(contentView);
+			// notification.contentView = contentView;
+			contentView.setViewVisibility(R.id.textViewSmallNoti, View.INVISIBLE);
+			contentView.setViewVisibility(R.id.progressBar1, View.INVISIBLE);
+			contentView.setTextViewText(R.id.textViewBigNoti, "Start Recording?");
+			// Notification.Builder notificationBuilder = new Notification.Builder(context);
+			notificationBuilder = new Notification.Builder(context);
+			notificationBuilder.setContent(contentView);
+			notificationBuilder.setContentTitle("Record Calls");
+			notificationBuilder.setContentText("Subject");
+			notificationBuilder.setContentIntent(pendingIntent);
+			notificationBuilder.setSmallIcon(R.drawable.ic_launcher);
+			// notificationBuilder.addAction(R.drawable.ic_launcher, "Record", pendingIntent);
+			notification = notificationBuilder.build();
+
+			// .setContentText("Subject")
+
+			// .addAction(R.drawable.icon, "Record", pIntent)
+			// .addAction(R.drawable.icon, "More", pIntent)
+
+			notificationManager = (NotificationManager) context.getSystemService(Service.NOTIFICATION_SERVICE);
+			// Hide the notification after its selected
+			notification.flags |= Notification.FLAG_AUTO_CANCEL;
+			Log.d(TAG, "After notificationManager");
+
+			notificationManager.notify(NOTIFICATION_ID_NOT_RECORDING, notification);
+
+			// audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+			startRecording = new BroadcastReceiver()
 			{
-				String action_name = intent.getAction();
-				if (action_name.equals("startRecording"))
+				@Override
+				public void onReceive(Context context, Intent intent)
 				{
-					// int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1);
-					// Log.d(TAG, "Audio SCO state: " + state);
-					//
-					// if (AudioManager.SCO_AUDIO_STATE_CONNECTED == state)
+					String action_name = intent.getAction();
+					if (action_name.equals("startRecording"))
+					{
+						// int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1);
+						// Log.d(TAG, "Audio SCO state: " + state);
+						//
+						// if (AudioManager.SCO_AUDIO_STATE_CONNECTED == state)
+						// {
+						// Log.d(TAG, "Bluetooth device connected.");
+						// }
+						Log.d(TAG, "startrecording...");
+						startRecording();
+						context.unregisterReceiver(startRecording);
+						startRecording = null;
+					}
+					// else if (action_name.equals("stopRecording"))
 					// {
-					// Log.d(TAG, "Bluetooth device connected.");
+					// stopRecording();
+					// context.unregisterReceiver(stopRecording);
 					// }
-					Log.d(TAG, "startrecording...");
-					startRecording();
-					context.unregisterReceiver(startRecording);
-					startRecording = null;
-				}
-				// else if (action_name.equals("stopRecording"))
-				// {
-				// stopRecording();
-				// context.unregisterReceiver(stopRecording);
-				// }
+				};
 			};
-		};
-		// IntentFilter intentFilter = new IntentFilter("startRecording");
-		// intentFilter.addAction("startRecording");
-		// intentFilter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
-		context.registerReceiver(startRecording, new IntentFilter("startRecording"));
-		// audioManager.startBluetoothSco();
-		// registerReceiver(broadcastReceiver, new IntentFilter("stopRecording"));
+			// IntentFilter intentFilter = new IntentFilter("startRecording");
+			// intentFilter.addAction("startRecording");
+			// intentFilter.addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED);
+			context.registerReceiver(startRecording, new IntentFilter("startRecording"));
+			// audioManager.startBluetoothSco();
+			// registerReceiver(broadcastReceiver, new IntentFilter("stopRecording"));
 
-		stopRecording = new BroadcastReceiver()
-		{
-			@Override
-			public void onReceive(Context context, Intent intent)
+			stopRecording = new BroadcastReceiver()
 			{
-				String action_name = intent.getAction();
-				if (action_name.equals("stopRecording"))
+				@Override
+				public void onReceive(Context context, Intent intent)
 				{
-					Log.d(TAG, "stoprecording...");
-					stopRecording();
-					context.unregisterReceiver(stopRecording);
-					stopRecording = null;
-				}
+					String action_name = intent.getAction();
+					if (action_name.equals("stopRecording"))
+					{
+						Log.d(TAG, "stoprecording...");
+						stopRecording();
+						context.unregisterReceiver(stopRecording);
+						stopRecording = null;
+					}
+				};
 			};
-		};
-		context.registerReceiver(stopRecording, new IntentFilter("stopRecording"));
+			context.registerReceiver(stopRecording, new IntentFilter("stopRecording"));
 
-		outgoingCall = new BroadcastReceiver()
-		{
-			@Override
-			public void onReceive(Context context, Intent intent)
+			outgoingCall = new BroadcastReceiver()
 			{
-				String action_name = intent.getAction();
-				if (action_name.equals("outgoingCall"))
+				@Override
+				public void onReceive(Context context, Intent intent)
 				{
-					Log.d(TAG, "outgoingCall...");
-					startRecording();
-					context.unregisterReceiver(startRecording);
-					startRecording = null;
-				}
+					String action_name = intent.getAction();
+					if (action_name.equals("outgoingCall"))
+					{
+						Log.d(TAG, "outgoingCall...");
+						startRecording();
+						context.unregisterReceiver(startRecording);
+						startRecording = null;
+					}
+				};
 			};
-		};
-		context.registerReceiver(startRecording, new IntentFilter("outgoingCall"));
+			context.registerReceiver(startRecording, new IntentFilter("outgoingCall"));
+		}
 		// listener = new PhoneStateListener()
 		// {
 		// public void onCallStateChanged(int state, String incomingnumber)
@@ -272,7 +278,7 @@ public class NotificationHelper
 		Log.d(TAG, "in startrecording() - before creating new callrecorder");
 		Callrecorder = new MediaRecorder();
 		Callrecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-		//1 for Mono and 2 for Stereo
+		// 1 for Mono and 2 for Stereo
 		Callrecorder.setAudioChannels(1);
 		// Callrecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		Callrecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -358,7 +364,7 @@ public class NotificationHelper
 	{
 
 		// Lets display a toast so the user knows the long running process has finished
-		Toast.makeText(context, "Long running process COMPLETE!", Toast.LENGTH_LONG).show();
+		Toast.makeText(context, "Recording COMPLETE!", Toast.LENGTH_LONG).show();
 		notificationManager.cancel(NOTIFICATION_ID_NOT_RECORDING);
 
 	}

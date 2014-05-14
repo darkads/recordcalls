@@ -2,18 +2,17 @@ package com.sky.recordcalls;
 
 import java.util.Locale;
 
-import android.os.AsyncTask;
-import android.os.IBinder;
-import android.os.SystemClock;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.IBinder;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class MainService extends Service
 {
@@ -23,6 +22,7 @@ public class MainService extends Service
 	NotificationHelper notificationHelper;
 	private PhoneStateListener listener;
 	private TelephonyManager telephoneM;
+	boolean enableRec = false;
 
 	@Override
 	// protected void onCreate(Bundle savedInstanceState)
@@ -30,30 +30,30 @@ public class MainService extends Service
 	{
 		// super.onCreate(savedInstanceState);
 		super.onCreate();
-		// setContentView(R.layout.activity_main);
-
-//		if (isMyServiceRunning())
-//		{
-//			Context context = getApplicationContext();
-//			Toast.makeText(context, "Service is already running! Stopping it first...", Toast.LENGTH_SHORT).show();
-//			Intent i = new Intent(context, MainService.class);
-//			context.stopService(i);
-//		}
-		notificationHelper = new NotificationHelper(this, ID);
-		Log.i(TAG, "Service created...");
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		// then you use
+		enableRec = prefs.getBoolean("EnableRecord", true);
+		if (enableRec)
+		{
+			notificationHelper = new NotificationHelper(this, ID, enableRec);
+			Log.i(TAG, "Service created...");
+		}
 		// this.finish();
 
 	}
-	
-	private boolean isMyServiceRunning() {
-	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-	        if ("com.sky.recordcalls.MainService".equals(service.service.getClassName())) {
-	            return true;
-	        }
-	    }
-	    return false;
-	}
+
+	// private boolean isMyServiceRunning()
+	// {
+	// ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+	// for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE))
+	// {
+	// if ("com.sky.recordcalls.MainService".equals(service.service.getClassName()))
+	// {
+	// return true;
+	// }
+	// }
+	// return false;
+	// }
 
 	// @Override
 	// protected void onPause()
@@ -119,35 +119,36 @@ public class MainService extends Service
 	public int onStartCommand(Intent intent, int flags, int StartId)
 	{
 		super.onStartCommand(intent, flags, StartId);
-
-		Log.d(TAG, "Service started...");
-		listener = new PhoneStateListener()
+		if (enableRec)
 		{
-			public void onCallStateChanged(int state, String incomingnumber)
+			Log.d(TAG, "Service started...");
+			listener = new PhoneStateListener()
 			{
-				// String stateS = "N/A";
-				switch (state)
+				public void onCallStateChanged(int state, String incomingnumber)
 				{
-					case TelephonyManager.CALL_STATE_IDLE:
-						stopSelf();
-						break;
-					case TelephonyManager.CALL_STATE_RINGING:
+					// String stateS = "N/A";
+					switch (state)
+					{
+						case TelephonyManager.CALL_STATE_IDLE:
+							stopSelf();
+							break;
+						case TelephonyManager.CALL_STATE_RINGING:
 
-						break;
-					case TelephonyManager.CALL_STATE_OFFHOOK:
+							break;
+						case TelephonyManager.CALL_STATE_OFFHOOK:
 
-						break;
+							break;
+					}
+
 				}
+			};
 
-			}
-		};
+			telephoneM = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+			telephoneM.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
 
-		telephoneM = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-		telephoneM.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
-		
-		new RecordingTask().execute();
-		// notificationHelper.createNotification();
-
+			new RecordingTask().execute();
+			// notificationHelper.createNotification();
+		}
 		return START_REDELIVER_INTENT;
 	}
 

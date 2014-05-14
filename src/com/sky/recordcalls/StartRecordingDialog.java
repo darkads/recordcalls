@@ -6,17 +6,13 @@ import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.IntentFilter;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 
 public class StartRecordingDialog extends Activity
 {
@@ -30,7 +26,6 @@ public class StartRecordingDialog extends Activity
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		
 		removeDialog = new BroadcastReceiver()
 		{
 			@Override
@@ -48,18 +43,16 @@ public class StartRecordingDialog extends Activity
 			};
 		};
 		this.registerReceiver(removeDialog, new IntentFilter("removeDialog"));
-		
 
-		
 	}
-	
+
 	@Override
 	public void onPostCreate(Bundle savedInstanceState)
 	{
 		super.onPostCreate(savedInstanceState);
 		showDialog();
 	}
-	
+
 	public void showDialog()
 	{
 		Window window = this.getWindow();
@@ -76,7 +69,7 @@ public class StartRecordingDialog extends Activity
 			{
 				sendBroadcast();
 				dialog.dismiss();
-				//return back to dialer activity
+				// return back to dialer activity
 				Intent intent = new Intent(Intent.ACTION_CALL_BUTTON);
 				startActivity(intent);
 			}
@@ -94,12 +87,26 @@ public class StartRecordingDialog extends Activity
 		{
 			public void onCancel(DialogInterface dialog)
 			{
+//				SharedPreferences sharedPref = getSharedPreferences("com.sky.recordcalls", MODE_PRIVATE);
+//				int callNum = sharedPref.getInt("CallNumber", 0);
+//				if (callNum < 2)
+//				{
+//					sendStopBroadcast();
+//				}
 				StartRecordingDialog.this.finish();
 			}
 		});
 		adialog = alert.create();
-//		alert.show();
+		// alert.show();
 		adialog.show();
+	}
+
+	public void sendStopBroadcast()
+	{
+		// TODO Auto-generated method stub
+		Intent broadcast = new Intent("com.sky.recordcalls.NotificationReceiverStopActivity");
+		broadcast.setAction("stopRecording");
+		this.sendBroadcast(broadcast);
 	}
 
 	public void sendBroadcast()

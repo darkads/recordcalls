@@ -1,0 +1,13 @@
+<resources>
+
+	<!-- <string name="title_activity_settings">RecordCalls</string> -->
+
+	<!-- Strings related to Settings -->
+
+
+	<!-- Example General settings -->
+	<string name="pref_header_general">General</string>
+	<string name="pref_title_enable_recording">Enable Call Recording</string>
+	<string name="pref_description_enable_recording">Once checked, outgoing and incoming calls will have the option of being recorded.</string>
+
+</resources>
